@@ -24,7 +24,7 @@ class color:
 
 
 #Establece origen de datos
-#os.chdir('C:\\Users\\dhcamarg\\.apphipo')
+os.chdir('C:\\Users\\dhcamarg\\.apphipo')
 # workdirectory=os.getcwd()
 
 #rutas hacia archivos binarios
@@ -41,6 +41,7 @@ arimapoisson_model = pickle.load(open("arima_poisson.sav", 'rb'))
 poisson_data = pickle.load(open("data_poisson.sav", 'rb'))
 prop_model=pickle.load(open("modelo_prop.sav", 'rb'))
 prop_data=pickle.load(open("data_prop.sav", 'rb'))
+arimaprop_model=pickle.load(open("arima_prop.sav", 'rb'))
 
 # Imagen
 icon=Image.open("LogoBancolombia.png")
@@ -117,19 +118,19 @@ def predice_poisson(tasa_pesos,tasabanrep,cdt):
         st.plotly_chart(fig)
         return nivel_agregado_pred
 
-def predice_prop(tasa_pesos,tasacomp,cdt,inflacion):
+def predice_prop(tasacomp,tasabanrep,reactivacion=0):
     index_of_fc=pd.date_range(poisson_data.index[-1] + pd.DateOffset(weeks=1), periods = 13, freq='W')
-    diferenciap=tasa_pesos-tasacomp
-    margenb=tasa_pesos-cdt
-    X_test={'diferencia_pesos':list(np.repeat(diferenciap,13)),
-            'tasapesos':list(np.repeat(tasa_pesos,13)),
-            'margen_banca':list(np.repeat(margenb,13)),
-            'inflacion':list(np.repeat(inflacion,13))
+    X_test={'const':list(np.repeat(1,13)),
+            'reactivacion':list(np.repeat(reactivacion,13)),
+            'competencia':list(np.repeat(tasacomp,13)),
+            'tasabanrep':list(np.repeat(tasabanrep,13))
             }
     X_test=pd.DataFrame.from_dict(X_test)
-    prediccion=prop_model.predict(X_test)
-    pred_media=pd.Series(prediccion, index=index_of_fc)
-    agregado_pred=pred_media.resample("M").mean()
+    pred_media=prop_model.predict(X_test)
+    pred_media.index=index_of_fc
+    fitted,confint = arimaprop_model.predict(n_periods=13,return_conf_int=True)
+    fitted_series = pd.Series(fitted, index=index_of_fc)+pred_media
+    agregado_pred=fitted_series.resample("M").mean()
     agregado_pred=agregado_pred[:-1]
     return agregado_pred
 
@@ -170,24 +171,22 @@ def main():
         fondeo=st.sidebar.slider("Fondeo 90 días",min_value=2.0,max_value=30.0,
                                 value=float(poisson_data.cdt90[-1:][0]),
                                step=0.1)
-        infla=st.sidebar.slider("Inflacion",min_value=2.0,max_value=30.0,
-                                value=float(poisson_data.inflacion[-1:][0]),
-                               step=0.1)
+
         
-        return banco,otros,banrep,fondeo,infla
-   tasab,tasac,BRC,cdt,inflacion=user_inputs()
+        return banco,otros,banrep,fondeo
+   tasab,tasac,BRC,cdt=user_inputs()
    #subtitulo
    st.subheader("Parámetros elegidos por el usuario")
    st.write(pd.DataFrame({"Tasa banco":[tasab],
                           "Tasa competencia":[tasac],
                           "Tasa BanRep":[BRC],
-                          "Fondeo":[cdt],
-                          "Inflación":[inflacion]
-                          }))
+                          "Fondeo":[cdt]
+                          }
+                          ,index=["Parámetros"]))
    #arancar las estimaciones
    #if st.button("RUN"):
    prediccion_poisson=predice_poisson(tasab,BRC,cdt)
-   prediccion_prop=predice_prop(tasab,tasac,cdt,inflacion)
+   prediccion_prop=predice_prop(tasac,BRC)
    plot_prediccion(prediccion_poisson,prediccion_prop)
 
 
