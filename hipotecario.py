@@ -24,7 +24,7 @@ class color:
 
 
 #Establece origen de datos
-os.chdir('C:\\Users\\dhcamarg\\.apphipo')
+#os.chdir('C:\\Users\\dhcamarg\\.apphipo')
 # workdirectory=os.getcwd()
 
 #rutas hacia archivos binarios
