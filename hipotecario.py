@@ -24,7 +24,7 @@ class color:
 
 
 #Establece origen de datos
-#os.chdir('C:\\Users\\dhcamarg\\.apphipo')
+os.chdir('C:\\Users\\dhcamarg\\.apphipo')
 # workdirectory=os.getcwd()
 
 #rutas hacia archivos binarios
@@ -220,7 +220,7 @@ def main():
    
    tasab,tasac,BRC=user_inputs()
    with st.sidebar:
-        st.write("El MAPE de predicción del numero de créditos desembolsados para dos meses es de 14.37% y el MAPE es de 233 créditos")
+        st.write("El MAPE de predicción del numero de créditos desembolsados para dos meses es de 14.37% y el MAE es de 233 créditos")
    #subtitulo
    st.subheader("Parámetros elegidos por el usuario")
    st.write(pd.DataFrame({"Tasa banco":[tasab],
