@@ -24,7 +24,7 @@ class color:
 
 
 #Establece origen de datos
-os.chdir('C:\\Users\\dhcamarg\\.apphipo')
+#os.chdir('C:\\Users\\dhcamarg\\.apphipo')
 # workdirectory=os.getcwd()
 
 #rutas hacia archivos binarios
@@ -80,8 +80,8 @@ def predice_poisson(tasa_pesos):
         fitted_series = pd.Series(fitted, index=index_of_fc)+pred_media
         agregado_pred=fitted_series.resample("M").sum()
         nivel_agregado_pred=agregado_pred[:-1]/(1+0.20)
-        int_sup=nivel_agregado_pred*(1+0.25)
-        int_inf=nivel_agregado_pred/(1+0.25)
+        int_sup=nivel_agregado_pred*(1+0.23)
+        int_inf=nivel_agregado_pred/(1+0.23)
         #grafico
         fig=go.Figure()
         fig.add_trace(go.Scatter(x=agregado_real.index, y=agregado_real[:],
@@ -121,8 +121,8 @@ def predice_poisson(tasa_pesos):
         fitted_series = pd.Series(fitted, index=index_of_fc)+pred_media
         agregado_pred=fitted_series.resample("M").sum()
         nivel_agregado_pred=agregado_pred[:-1]/(1+0.20)
-        int_sup=nivel_agregado_pred*(1+0.25)
-        int_inf=nivel_agregado_pred/(1+0.25)
+        int_sup=nivel_agregado_pred*(1+0.23)
+        int_inf=nivel_agregado_pred/(1+0.23)
         #grafico
         fig=go.Figure()
         fig.add_trace(go.Scatter(x=agregado_real.index, y=agregado_real[:],
@@ -166,8 +166,8 @@ def plot_prediccion(conteo,proporcion):
     col1,col2=st.columns([4,2])
     with col1:
         estimado=conteo*proporcion
-        int_sup=estimado*(1+0.26)
-        int_inf=estimado/(1+0.26)
+        int_sup=estimado*(1+0.22)
+        int_inf=estimado/(1+0.22)
         fig=go.Figure()
         fig.add_trace(go.Scatter(x=estimado.index, y=estimado[:],
                                 mode='lines',
@@ -220,7 +220,7 @@ def main():
    
    tasab,tasac,BRC=user_inputs()
    with st.sidebar:
-        st.write("El MAPE de predicción del numero de créditos desembolsados para dos meses es de 14.37% y el MAE es de 233 créditos")
+        st.write("El MAPE de predicción del numero de créditos desembolsados para dos meses es de 10.48% y el MAE es de 144 créditos")
    #subtitulo
    st.subheader("Parámetros elegidos por el usuario")
    st.write(pd.DataFrame({"Tasa banco":[tasab],
